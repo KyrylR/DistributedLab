@@ -20,6 +20,13 @@ To write a library that allows:
 * Conversion of BIG Endian value into HEX value
 
 
+---
+## Features of implementation of conversion from hexadecimal to L\B endian
+
+To convert a hexadecimal number to Little or Big endian values, 
+I simply parse the input string into an array, which I divide by 2 characters, 
+then sort it in the appropriate order and, finally, process it and return int   
+
 ### Executing program
 
 * Do following sequence of commands to run tests:
