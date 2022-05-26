@@ -1,4 +1,4 @@
-# Solutions to the Large numbers exercise
+# Solutions to the HEX <-> Int exercise
 
 Distributed Lab Course in Spring of 2022.
 
