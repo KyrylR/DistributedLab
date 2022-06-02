@@ -2,6 +2,24 @@
 
 Distributed Lab Course in Spring of 2022.
 
+# Why am I using the built-in hex function?
+
+Just wrote a rough approach for converting a decimal number to hexadecimal:
+```
+# ---- HexLittleBigEndian/utils.py -----
+
+if __name__ == "__main__":
+    number = 2 ** 1024555
+    dec2hex(number)
+    dec2hex_default(number)
+```
+And I got the result:
+```
+Function: <function dec2hex at 0x000001B2A0ECEDC0> took 112.22470116615295 s
+Function: <function dec2hex_default at 0x000001B2A0ECEEE0> took 0.0 s
+```
+Therefore, I use the built-in `hex()` function to make the program more stable. 
+
 ## General information 
 
 For calculations, data is stored in separate fields, each field stores 
