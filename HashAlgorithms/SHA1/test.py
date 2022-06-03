@@ -1,8 +1,7 @@
 import hashlib
 import random
 import unittest
-
-from HashAlgorithms.SHA1 import sha1
+import sha1
 
 
 class TestSha1(unittest.TestCase):
