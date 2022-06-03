@@ -86,6 +86,7 @@ Round[b](A,RC) {
 }
 ```
 Constant values r[x,y]:
+![image](https://user-images.githubusercontent.com/89979281/171892206-f771fbd5-2915-4ef4-baf1-f68661d4c23f.png)
 
 You can find the text of the standard itself and the test vectors at the following 
 [link](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf)
