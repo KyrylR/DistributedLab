@@ -22,6 +22,7 @@ The main objective of information security is to ensure:
 * data integrity,
 * availability of data,
 * data confidentiality, data integrity, data availability, data authenticity.
+
 Confidentiality implies that unauthorised persons cannot access data that is stored or transmitted. This security 
 service can be ensured through the use of encryption algorithms. 
 Integrity implies that the data has not been altered during transmission or operation of the data. Hash functions 
