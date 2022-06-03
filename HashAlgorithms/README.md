@@ -37,6 +37,7 @@ A hash function converts arbitrarily-length data into a fixed-length string. Due
 functions it is impossible to obtain the original data with only its hash value. If even a small change is made 
 to the original value, the resulting value will be significantly different.
 
+![image](https://user-images.githubusercontent.com/89979281/171890997-38202c4d-4acf-4c8e-9888-026d17bdf3cc.png)
 
 Figure 1.1 - How a hash function works
 
