@@ -19,7 +19,7 @@ to a fixed-length string. Then the Absorb function is executed. This function is
 * ι transformation.
     This is followed by the Squeezing procedure. This procedure is necessary to compute the final hash value.
 
-Pseudo-code:
+### Pseudo-code:
 ```
 Keccak[r,c](Mbytes || Mbits) {
   # Padding
@@ -59,7 +59,7 @@ RC[9] 0x0000000000000088 RC[21] 0x8000000000008080
 RC[10] 0x0000000080008009 RC[22] 0x0000000080000001
 RC[11] 0x000000008000000A RC[23] 0x8000080008008
 
-Pseudo-code of Keccak-f:
+### Pseudo-code of Keccak-f:
  ```
 Keccak-f[b](A) {
   for i in 0...n-1 // n=24
