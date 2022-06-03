@@ -2,6 +2,7 @@
 In fact, a feature of SHA-1 is the cyclic mixing and use of basic bitwise operations on the input data. 
 Scheme of execution of one cycle of SHA-1 algorithm is as follows:
 
+![image](https://user-images.githubusercontent.com/89979281/171891790-024dc169-db9a-428d-a8bf-fee1ee5cc03f.png)
 
 Figure 2.1 - Scheme of execution of one SHA-1 algorithm cycle
 
