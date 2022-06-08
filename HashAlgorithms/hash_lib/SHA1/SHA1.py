@@ -40,6 +40,7 @@ class SHA1:
         """
         assert len(chunk) == 64
 
+        # word
         w = [0] * 80
 
         # Break chunk into sixteen 4-byte big-endian words w[i]
