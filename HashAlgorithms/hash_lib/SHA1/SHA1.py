@@ -123,6 +123,7 @@ class SHA1:
             # this string is a concatenation of h0, ..., h4 in hexadecimal format
             # %08x (0xff) equals 4 bytes, so we have 5 * 4 = 20 bytes or 160 bits
             return '%08x%08x%08x%08x%08x' % h
+
         return '%08x%08x%08x%08x%08x' % self._process_chunk(block[64:], *h)
 
 
