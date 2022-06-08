@@ -84,6 +84,7 @@ class SHA1:
     def encrypt(self, message: str):
         """
         Produce a hex SHA-1 digest of the input message.
+
         :param message: plain text
         :return: the final hash value (big-endian) as a hex string
         """
