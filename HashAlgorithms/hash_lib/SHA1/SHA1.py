@@ -90,40 +90,36 @@ class SHA1:
         bytes_message = io.BytesIO(message.encode())
         message_byte_len = 0
 
-        chunk = bytes_message.read(64)
+        # Read the first block of 512 bits
+        block = bytes_message.read(64)
 
         # Read the rest of the data, 64 bytes at a time
-        while len(chunk) == 64:
-            self.h = self._process_chunk(chunk, *self.h)
+        while len(block) == 64:
+            self.h = self._process_chunk(block, *self.h)
             message_byte_len += 64
-            chunk = bytes_message.read(64)
+            block = bytes_message.read(64)
 
-        message_byte_len += len(chunk)
+        message_byte_len += len(block)
         # append the bit '1' to the message e.g. by adding 0x80
         # if message length is a multiple of 8 bits.
-        chunk += b'\x80'
+        block += b'\x80'
 
         # append 0 <= k < 512 bits '0', so that the resulting message length (in bytes)
         # is congruent to 448 (mod 512) <- bits, so in bytes is -8 = 56 mod 64
-        chunk += b'\x00' * ((56 - (message_byte_len + 1) % 64) % 64)
+        block += b'\x00' * ((56 - (message_byte_len + 1) % 64) % 64)
 
         # append ml, the original message length in bits, as a 64-bit big-endian integer.
-        message_bit_length = message_byte_len * 8
-        msg_bit_len = struct.pack(b'>Q', message_bit_length)
-
         # Thus, the total length is a multiple of 512 bits.
-        chunk += msg_bit_len
+        block += struct.pack(b'>Q', message_byte_len * 8)
 
-        # Process the final chunk
-        # At this point, the length of the message is either 64 or 128 bytes.
-        h = self._process_chunk(chunk[:64], *self.h)
-        if len(chunk) == 64:
+        # Process the final block
+        h = self._process_chunk(block[:64], *self.h)
+        if len(block) == 64:
             # this string is a concatenation of h0, ..., h4 in hexadecimal format
             # %08x equals 4 bytes, so we have 5 * 4 = 20 bytes or 160 bits
             return '%08x%08x%08x%08x%08x' % h
-        return '%08x%08x%08x%08x%08x' % self._process_chunk(chunk[64:], *h)
+        return '%08x%08x%08x%08x%08x' % self._process_chunk(block[64:], *h)
 
 
 if __name__ == "__main__":
     print(SHA1().encrypt("Hello world!"))
-    print(int('0xffffffff', 16))
