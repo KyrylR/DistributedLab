@@ -7,6 +7,9 @@ Based on: https://en.wikipedia.org/wiki/SHA-1#SHA-1_pseudocode
 
 
 class SHA1:
+    """
+    A class for implementing the SHA1 algorithm.
+    """
     __slots__ = ['h']
 
     def __init__(self):
@@ -117,7 +120,7 @@ class SHA1:
         h = self._process_chunk(block[:64], *self.h)
         if len(block) == 64:
             # this string is a concatenation of h0, ..., h4 in hexadecimal format
-            # %08x equals 4 bytes, so we have 5 * 4 = 20 bytes or 160 bits
+            # %08x (0xff) equals 4 bytes, so we have 5 * 4 = 20 bytes or 160 bits
             return '%08x%08x%08x%08x%08x' % h
         return '%08x%08x%08x%08x%08x' % self._process_chunk(block[64:], *h)
 
