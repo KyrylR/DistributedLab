@@ -1,12 +1,28 @@
 import numpy as np
 import io
-import struct
 
 
-# Future utils
-def array_copy(src, src_pos, dest, dest_pos, length):
-    for i in range(length):
-        dest[i + dest_pos] = src[i + src_pos]
+class Utils:
+    @staticmethod
+    def array_copy(src, src_pos, dest, dest_pos, length):
+        for i in range(length):
+            dest[i + dest_pos] = src[i + src_pos]
+
+    @staticmethod
+    def little_endian_to_64(data):
+        result = 0
+        for i in range(0, 8):
+            result += data[i] << (8 * i)
+
+        return result
+
+    @staticmethod
+    def val_64_to_little_endian(data):
+        result = np.zeros(8, dtype=int)
+        for i in range(0, 8):
+            result[i] = (data >> (8 * i)) % 256
+
+        return result
 
 
 BIT_64 = 0xffffffffffffffff
@@ -31,8 +47,9 @@ class Keccak:
         return ((n << d) | (n >> (64 - d))) & BIT_64
 
     def encrypt(self, message):
-        states = np.array(200)
-        bytes_message = np.array(message.encode())
+        states = np.zeros(200, dtype=int)
+        arr = [b for b in bytearray(message.encode())]
+        bytes_message = np.array(arr)
         bytes_length = len(message)
 
         if self.rate % 8 != 0:
@@ -53,6 +70,10 @@ class Keccak:
                 self.keccak_fill(states)
                 block_size = 0
 
+        states[block_size] = states[block_size] ^ self.d
+        if (self.d & 0x80) != 0 and block_size == (rate_in_bytes - 1):
+            self.keccak_fill(states)
+
         states[rate_in_bytes - 1] = states[rate_in_bytes] ^ 0x80
         self.keccak_fill(states)
 
@@ -69,29 +90,27 @@ class Keccak:
 
         return byte_results
 
-
-
     def keccak_fill(self, states):
         l_state = np.zeros((5, 5))
 
         for i in range(0, 5):
             for j in range(0, 5):
-                data = np.zeros(8)
-                array_copy(states, 8 * (i + 5 * j), data, 0, 8)
-                l_state[i][j] = struct.pack(b'>Q', data)
+                data = np.zeros(8, dtype=int)
+                Utils.array_copy(states, 8 * (i + 5 * j), data, 0, 8)
+                l_state[i][j] = Utils.little_endian_to_64(data)
 
         self.round_b(l_state)
         states.fill(0)
         for i in range(0, 5):
             for j in range(0, 5):
-                data = struct.pack(b'=Q', l_state[i][j])
-                array_copy(data, 0, states, 8 * (i + 5 * j), 8)
+                data = Utils.val_64_to_little_endian(l_state[i][j])
+                Utils.array_copy(data, 0, states, 8 * (i + 5 * j), 8)
 
     def round_b(self, state):
         lfsr_state = 1
         for round_cipher in range(0, 24):
-            c_arr = np.array(5)
-            d_arr = np.array(5)
+            c_arr = np.zeros(5, dtype=int)
+            d_arr = np.zeros(5, dtype=int)
 
             for i in range(0, 5):
                 c_arr[i] = state[i][0] ^ state[i][1] ^ state[i][2] ^ state[i][3] ^ state[i][4]
@@ -116,7 +135,7 @@ class Keccak:
                 state[x][y] = self._left_circular_shift(shift_value, (i + 1) * (i + 2) / 2)
 
             for j in range(0, 5):
-                temp = np.array(5)
+                temp = np.zeros(5, dtype=int)
                 for i in range(0, 5):
                     temp[i] = state[i][j]
 
@@ -129,3 +148,7 @@ class Keccak:
                 bit_position = (1 << i) - 1
                 if (lfsr_state & 2) != 0:
                     state[0][0] = state[0][0] ^ (1 << bit_position)
+
+
+if __name__ == "__main__":
+    print(f"Hash: {Keccak().encrypt('3, 9, 10')}", end='\n')
