@@ -62,21 +62,28 @@ class Keccak:
                 array_copy(states, 8 * (i + 5 * j), data, 0, 8)
                 l_state[i][j] = struct.pack(b'>Q', data)
 
+        self.round_b(l_state)
+        states.fill(0)
+        for i in range(0, 5):
+            for j in range(0, 5):
+                data = struct.pack(b'=Q', l_state[i][j])
+                array_copy(data, 0, states, 8 * (i + 5 * j), 8)
+
     def round_b(self, state):
         lfsr_state = 1
-        for round in range(0, 24):
-            C = np.array(5)
-            D = np.array(5)
+        for round_cipher in range(0, 24):
+            c_arr = np.array(5)
+            d_arr = np.array(5)
 
             for i in range(0, 5):
-                C[i] = state[i][0] ^ state[i][1] ^ state[i][2] ^ state[i][3] ^ state[i][4]
+                c_arr[i] = state[i][0] ^ state[i][1] ^ state[i][2] ^ state[i][3] ^ state[i][4]
 
             for i in range(0, 5):
-                D[i] = C[(i + 4) % 5] ^ self._left_circular_shift(C[(i + 1) % 5], 1)
+                d_arr[i] = c_arr[(i + 4) % 5] ^ self._left_circular_shift(c_arr[(i + 1) % 5], 1)
 
             for i in range(0, 5):
                 for j in range(0, 5):
-                    state[i][j] = state[i][j] ^ D[i]
+                    state[i][j] = state[i][j] ^ d_arr[i]
 
             x, y = 1, 0
             current = state[x][y]
@@ -104,4 +111,3 @@ class Keccak:
                 bit_position = (1 << i) - 1
                 if (lfsr_state & 2) != 0:
                     state[0][0] = state[0][0] ^ (1 << bit_position)
-
