@@ -4,12 +4,26 @@ from numpy import bitwise_xor as xor
 
 class Utils:
     @staticmethod
-    def array_copy(src, src_pos, dest, dest_pos, length):
+    def array_copy(src, src_pos, dest, dest_pos, length) -> None:
+        """
+        The array_copy method copies an array from the specified source array,
+        beginning at the specified position, to the specified position of the destination array
+        :param src: This is the source array.
+        :param src_pos: This is the starting position in the source array.
+        :param dest: This is the destination array.
+        :param dest_pos: This is the starting position in the destination data.
+        :param length: This is the number of array elements to be copied.
+        """
         for i in range(length):
             dest[i + dest_pos] = src[i + src_pos]
 
     @staticmethod
     def little_endian_to_64(data):
+        """
+        Simple converter from Little Endian to int64
+        :param data: byte array in Little Endian order
+        :return: int64
+        """
         result = 0
         for i in range(0, 8):
             result += int(data[i]) << (8 * i)
@@ -18,6 +32,11 @@ class Utils:
 
     @staticmethod
     def val_64_to_little_endian(data):
+        """
+        Simple converter from int64 to Little Endian
+        :param data: int64
+        :return: byte array in Little Endian order
+        """
         result = np.zeros(8, dtype=np.ulonglong)
         for i in range(0, 8):
             result[i] = (int(data) >> (8 * i)) % 256
@@ -25,10 +44,14 @@ class Utils:
         return result
 
 
+# Mask
 BIT_64 = 0xffffffffffffffff
 
 
 class Keccak:
+    """
+    My implementation of Keccak algorithm.
+    """
     __slots__ = ['rate', 'd', 'output_len']
 
     def __init__(self):
@@ -47,10 +70,15 @@ class Keccak:
         d = d % 64
         return ((int(n) << d) | (int(n) >> (64 - d))) & BIT_64
 
-    def encrypt(self, message):
+    def encrypt(self, msg):
+        """
+        Keccak encrypt function.
+        :param msg: plain text
+        :return: hexadecimal string.
+        """
         states = np.zeros(200, dtype=np.uint64)
-        bytes_message = np.array([b for b in bytearray(message.encode())], dtype=np.uint64)
-        bytes_length = len(message)
+        bytes_message = np.array([b for b in bytearray(msg.encode())], dtype=np.uint64)
+        bytes_length = len(msg)
 
         if self.rate % 8 != 0:
             print("Error!")
@@ -154,4 +182,5 @@ class Keccak:
 
 
 if __name__ == "__main__":
-    print(f"Hash: {Keccak().encrypt('Keccak')}", end='\n')
+    message = 'cc'
+    print(f"String: {message}\nHash: {Keccak().encrypt(message)}", end='\n')
