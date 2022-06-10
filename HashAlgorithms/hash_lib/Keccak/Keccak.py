@@ -53,6 +53,24 @@ class Keccak:
                 self.keccak_fill(states)
                 block_size = 0
 
+        states[rate_in_bytes - 1] = states[rate_in_bytes] ^ 0x80
+        self.keccak_fill(states)
+
+        byte_results = io.BytesIO
+        temp_output_length = self.output_len // 8
+        while temp_output_length > 0:
+            block_size = min(temp_output_length, rate_in_bytes)
+            for i in range(0, block_size):
+                byte_results.write(states[i].tobytes(), 0)
+
+            temp_output_length -= block_size
+            if temp_output_length > 0:
+                self.keccak_fill(states)
+
+        return byte_results
+
+
+
     def keccak_fill(self, states):
         l_state = np.zeros((5, 5))
 
