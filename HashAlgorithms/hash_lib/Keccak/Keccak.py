@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import bitwise_xor as xor
 import io
 
 
@@ -12,15 +13,15 @@ class Utils:
     def little_endian_to_64(data):
         result = 0
         for i in range(0, 8):
-            result += data[i] << (8 * i)
+            result += int(data[i]) << (8 * i)
 
         return result
 
     @staticmethod
     def val_64_to_little_endian(data):
-        result = np.zeros(8, dtype=int)
+        result = np.zeros(8, dtype=np.ulonglong)
         for i in range(0, 8):
-            result[i] = (data >> (8 * i)) % 256
+            result[i] = (int(data) >> (8 * i)) % 256
 
         return result
 
@@ -33,7 +34,7 @@ class Keccak:
 
     def __init__(self):
         self.rate = 1088
-        self.d = 0x01
+        self.d = np.array(0x01, dtype=np.uint64)
         self.output_len = 256
 
     @staticmethod
@@ -44,12 +45,15 @@ class Keccak:
         :param d: number of bits to shift
         :return: left rotate n by d bits
         """
-        return ((n << d) | (n >> (64 - d))) & BIT_64
+        d = d % 64
+        temp1 = int(n) << d
+        temp2 = int(n) >> (64 - d)
+        temp3 = ((int(n) << d) | (int(n) >> (64 - d)))
+        return ((int(n) << d) | (int(n) >> (64 - d))) & BIT_64
 
     def encrypt(self, message):
-        states = np.zeros(200, dtype=int)
-        arr = [b for b in bytearray(message.encode())]
-        bytes_message = np.array(arr)
+        states = np.zeros(200, dtype=np.uint64)
+        bytes_message = np.array([b for b in bytearray(message.encode())], dtype=np.uint64)
         bytes_length = len(message)
 
         if self.rate % 8 != 0:
@@ -63,26 +67,27 @@ class Keccak:
         while input_offset < bytes_length:
             block_size = min(bytes_length - input_offset, rate_in_bytes)
             for i in range(0, block_size):
-                states[i] = states[i] ^ bytes_message[i + input_offset]
+                states[i] = xor(states[i], bytes_message[i + input_offset])
 
             input_offset = input_offset + block_size
             if block_size == rate_in_bytes:
                 self.keccak_fill(states)
                 block_size = 0
 
-        states[block_size] = states[block_size] ^ self.d
-        if (self.d & 0x80) != 0 and block_size == (rate_in_bytes - 1):
+        states[block_size] = xor(states[block_size], self.d)
+        if (np.bitwise_and(self.d, np.array(0x80, dtype=np.uint64))) != 0 and block_size == (rate_in_bytes - 1):
             self.keccak_fill(states)
 
-        states[rate_in_bytes - 1] = states[rate_in_bytes] ^ 0x80
+        states[rate_in_bytes - 1] = xor(states[rate_in_bytes], np.array(0x80, dtype=np.uint64))
         self.keccak_fill(states)
 
-        byte_results = io.BytesIO
+        byte_results = bytearray()
         temp_output_length = self.output_len // 8
         while temp_output_length > 0:
             block_size = min(temp_output_length, rate_in_bytes)
             for i in range(0, block_size):
-                byte_results.write(states[i].tobytes(), 0)
+                temp = states[i]
+                byte_results.append(temp)
 
             temp_output_length -= block_size
             if temp_output_length > 0:
@@ -91,11 +96,11 @@ class Keccak:
         return byte_results
 
     def keccak_fill(self, states):
-        l_state = np.zeros((5, 5))
+        l_state = np.zeros((5, 5), dtype=np.uint64)
 
         for i in range(0, 5):
             for j in range(0, 5):
-                data = np.zeros(8, dtype=int)
+                data = np.zeros(8, dtype=np.uint64)
                 Utils.array_copy(states, 8 * (i + 5 * j), data, 0, 8)
                 l_state[i][j] = Utils.little_endian_to_64(data)
 
@@ -109,18 +114,20 @@ class Keccak:
     def round_b(self, state):
         lfsr_state = 1
         for round_cipher in range(0, 24):
-            c_arr = np.zeros(5, dtype=int)
-            d_arr = np.zeros(5, dtype=int)
+            c_arr = np.zeros(5, dtype=np.uint64)
+            d_arr = np.zeros(5, dtype=np.uint64)
 
             for i in range(0, 5):
-                c_arr[i] = state[i][0] ^ state[i][1] ^ state[i][2] ^ state[i][3] ^ state[i][4]
+                c_arr[i] = xor(xor(xor(xor(state[i][0], state[i][1]), state[i][2]), state[i][3]), state[i][4])
 
             for i in range(0, 5):
-                d_arr[i] = c_arr[(i + 4) % 5] ^ self._left_circular_shift(c_arr[(i + 1) % 5], 1)
+                arg2 = np.array(self._left_circular_shift(c_arr[(i + 1) % 5], 1), dtype=np.uint64)
+                arg1 = np.array(c_arr[(i + 4) % 5], dtype=np.uint64)
+                d_arr[i] = xor(arg1, arg2)
 
             for i in range(0, 5):
                 for j in range(0, 5):
-                    state[i][j] = state[i][j] ^ d_arr[i]
+                    state[i][j] = xor(state[i][j], d_arr[i])
 
             x, y = 1, 0
             current = state[x][y]
@@ -132,23 +139,23 @@ class Keccak:
                 shift_value = current
                 current = state[x][y]
 
-                state[x][y] = self._left_circular_shift(shift_value, (i + 1) * (i + 2) / 2)
+                state[x][y] = self._left_circular_shift(shift_value, (i + 1) * (i + 2) // 2)
 
             for j in range(0, 5):
-                temp = np.zeros(5, dtype=int)
+                temp = np.zeros(5, dtype=np.uint64)
                 for i in range(0, 5):
                     temp[i] = state[i][j]
 
                 for i in range(0, 5):
-                    invert_value = temp[(i + 1) % 5] ^ BIT_64
-                    state[i][j] = temp[i] ^ (invert_value + temp[(i + 2) % 5])
+                    invert_value = xor(temp[(i + 1) % 5], BIT_64)
+                    state[i][j] = xor(temp[i], np.bitwise_and(invert_value, temp[(i + 2) % 5]))
 
             for i in range(0, 7):
-                lfsr_state = ((lfsr_state << 1) ^ ((lfsr_state >> 7) * 0x71)) % 256
+                lfsr_state = (xor((lfsr_state << 1), ((lfsr_state >> 7) * 0x71))) % 256
                 bit_position = (1 << i) - 1
                 if (lfsr_state & 2) != 0:
-                    state[0][0] = state[0][0] ^ (1 << bit_position)
+                    state[0][0] = xor(state[0][0], np.array((1 << bit_position), dtype=np.uint64))
 
 
 if __name__ == "__main__":
-    print(f"Hash: {Keccak().encrypt('3, 9, 10')}", end='\n')
+    print(f"Hash: {Keccak().encrypt('cc').hex()}", end='\n')
