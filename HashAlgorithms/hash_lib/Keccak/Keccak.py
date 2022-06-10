@@ -89,7 +89,7 @@ class Keccak:
             if temp_output_length > 0:
                 self.keccak_fill(states)
 
-        return byte_results
+        return byte_results.hex()
 
     def keccak_fill(self, states):
         l_state = np.zeros((5, 5), dtype=np.uint64)
@@ -154,4 +154,4 @@ class Keccak:
 
 
 if __name__ == "__main__":
-    print(f"Hash: {Keccak().encrypt('cc').hex()}", end='\n')
+    print(f"Hash: {Keccak().encrypt('Keccak')}", end='\n')

@@ -2,7 +2,7 @@ import unittest
 from HashAlgorithms.hash_lib.SHA1.SHA1 import SHA1
 
 
-class MyTestCase(unittest.TestCase):
+class SHA1TestCase(unittest.TestCase):
     def test_on_keccak_strings(self):
         actual = "Keccak"
         expected = "34a663a04dabe538f7e6b01cb2e4727d55d1364b"
