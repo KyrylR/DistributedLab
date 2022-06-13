@@ -181,6 +181,6 @@ class Keccak:
                     state[0][0] = xor(state[0][0], np.array((1 << bit_position), dtype=np.uint64))
 
 
-if __name__ == "__main__":
-    message = 'cc'
-    print(f"String: {message}\nHash: {Keccak().encrypt(message)}", end='\n')
+# def demo():
+#     message = 'cc'
+#     print(f"String: {message}\nHash: {Keccak().encrypt(message)}", end='\n')
