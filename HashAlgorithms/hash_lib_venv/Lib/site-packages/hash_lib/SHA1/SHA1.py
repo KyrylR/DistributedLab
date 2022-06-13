@@ -85,14 +85,14 @@ class SHA1:
 
         return h0, h1, h2, h3, h4
 
-    def encrypt(self, message: str):
+    def get_hash(self, message: bytes):
         """
         Produce a hex SHA-1 digest of the input message.
 
         :param message: plain text
         :return: the final hash value (big-endian) as a hex string
         """
-        bytes_message = io.BytesIO(message.encode())
+        bytes_message = io.BytesIO(message)
         message_byte_len = 0
 
         # Read the first block of 512 bits
@@ -127,6 +127,9 @@ class SHA1:
         return '%08x%08x%08x%08x%08x' % self._process_chunk(block[64:], *h)
 
 
-# def demo():
-#     message = 'Hello world!'
-#     print(f"{'String:':7} {message}\n{'Hash:':7} {SHA1().encrypt(message)}", end='\n')
+def demo():
+    message = 'Hello world!'
+    print(f"{'String:':7} {message}\n{'Hash:':7} {SHA1().get_hash(message.encode())}", end='\n')
+
+
+demo()
