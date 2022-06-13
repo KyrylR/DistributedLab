@@ -127,5 +127,6 @@ class SHA1:
         return '%08x%08x%08x%08x%08x' % self._process_chunk(block[64:], *h)
 
 
-if __name__ == "__main__":
-    print(SHA1().encrypt("Hello world!"))
+# def demo():
+#     message = 'Hello world!'
+#     print(f"{'String:':7} {message}\n{'Hash:':7} {SHA1().encrypt(message)}", end='\n')
