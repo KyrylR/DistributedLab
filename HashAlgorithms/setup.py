@@ -4,7 +4,7 @@ setup(
     name='hash_lib',
     packages=find_packages(exclude=("tests",)),
     python_requires=">=3.*",
-    version='0.0.1',
+    version='0.0.2',
     description='Python library for implementing hash algorithms such as Keccak and SHA1',
     author='InterNosTC',
     license='MIT',

@@ -1,3 +1,4 @@
+import io
 from time import time
 
 import numpy as np
@@ -69,7 +70,7 @@ class Keccak:
 
     def __init__(self):
         self.rate = 1088
-        self.d = np.array(0x01, dtype=np.uint64)
+        self.d = np.array(0x08, dtype=np.uint64)
         self.output_len = 256
 
     @staticmethod
@@ -87,9 +88,11 @@ class Keccak:
     def get_hash(self, byte_msg: bytes):
         """
         Keccak encrypt function.
-        :param msg: plain text
+        :param byte_msg: plain text
         :return: hexadecimal string.
         """
+        # states_b = io.BytesIO(byte_msg)
+        # states_b.
         states = np.zeros(200, dtype=np.uint64)
         bytes_message = np.array([b for b in bytearray(byte_msg)], dtype=np.uint64)
         bytes_length = len(byte_msg)
