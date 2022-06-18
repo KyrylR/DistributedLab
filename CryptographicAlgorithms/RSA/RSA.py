@@ -1,7 +1,7 @@
 import random
 
 """
-RSA (Rivest–Shamir–Adleman) is a public-key cryptosystem that is widely used for secure data transmission. It is 
+RSA (Rivest–Shamir–Adleman) is a public-key crypto system that is widely used for secure data transmission. It is 
 also one of the oldest. The acronym "RSA" comes from the surnames of Ron Rivest, Adi Shamir and Leonard Adleman, 
 who publicly described the algorithm in 1977. An equivalent system was developed secretly in 1973 at GCHQ (the 
 British signals intelligence agency) by the English mathematician Clifford Cocks. That system was declassified in 
@@ -171,7 +171,7 @@ def generate_keys(k_size: int = 1024) -> (int, int, int):
 
     # Choose public key (pbk), where pbk is co-prime with phi_n & 1 < pbk <= phi_n
     while True:
-        pbk = random.randrange(2 ** (k_size - 1), 2 ** key_size - 1)
+        pbk = random.randrange(2 ** (k_size - 1), 2 ** k_size - 1)
         if is_co_prime(pbk, phi_n):
             break
 
