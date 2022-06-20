@@ -1,9 +1,8 @@
-import copy
 import unittest
 from RSA import *
 
 
-class MyTestCase(unittest.TestCase):
+class RSATestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.plain_text = "Hello!"
