@@ -16,6 +16,12 @@ cd .\CryptographicAlgorithms\RSA\
 python .\test_RSA.py
 ```
 
+* RC4 test:
+```
+cd .\CryptographicAlgorithms\RC4\
+python .\test_RC4.py 
+```
+
 ### Test result
 
 ##### RSA
@@ -29,6 +35,20 @@ Decrypt: Hello!
 .
 ----------------------------------------------------------------------
 Ran 1 test in 0.002s
+
+OK
+```
+
+##### RC4
+
+```
+Your plain text is: Entered plain text
+Your RC4 text is: 'çÈ#\x94}\x8fØ®[üE\x8f4zõ¦Ê+'
+Decryption: Entered plain text
+
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
 
 OK
 ```
