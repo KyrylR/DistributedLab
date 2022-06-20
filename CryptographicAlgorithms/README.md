@@ -6,6 +6,7 @@ Distributed Lab Course in Spring of 2022.
 
 In this lab work I have implemented the following algorithms:
 1. RSA
+2. RC4
 
 ---
 
