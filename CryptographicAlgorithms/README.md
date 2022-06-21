@@ -7,6 +7,7 @@ Distributed Lab Course in Spring of 2022.
 In this lab work I have implemented the following algorithms:
 1. RSA
 2. RC4
+3. AES
 
 ---
 
@@ -21,6 +22,12 @@ python .\test_RSA.py
 ```
 cd .\CryptographicAlgorithms\RC4\
 python .\test_RC4.py 
+```
+
+* AES test:
+```
+cd .\CryptographicAlgorithms\AES\
+python .\test_AES.py
 ```
 
 ### Test result
@@ -50,6 +57,19 @@ Decryption: Entered plain text
 .
 ----------------------------------------------------------------------
 Ran 1 test in 0.001s
+
+OK
+```
+
+##### AES
+
+```
+Decrypted text: 66814286504060421741230023322616923956
+Plain text: 66814286504060421741230023322616923956
+Encrypted text: 75960790320075369159181001580855561010
+.
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
 
 OK
 ```
