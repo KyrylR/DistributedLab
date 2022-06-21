@@ -3,7 +3,8 @@
 The AES encryption algorithm defines multiple transformations that are performed on data stored in an array. 
 AES involves operating on an array of 4×4 bytes, which is called a state (in the simplest case).
 
-![image](https://user-images.githubusercontent.com/89979281/174750846-0f2ae5ef-296d-4c39-a3af-1d9d328a173e.png)
+![Schematic diagram of AES workflow](https://user-images.githubusercontent.com/89979281/174750846-0f2ae5ef-296d-4c39-a3af-1d9d328a173e.png)
+
 Figure 1.1 - Schematic diagram of AES workflow
 
 ### Pseudo-code for Encrypt
@@ -36,7 +37,8 @@ function Encrypt(plaintext, key) {
 1. The DivideIntoBlocks function must divide the input text into blocks of 128 bits (16 bytes). 
    Each block is represented as a 4x4 matrix (example in the following figure).
 
-   ![image](https://user-images.githubusercontent.com/89979281/174750983-511b393a-c27f-46f0-b137-3154fd3ed623.png)
+   ![Example of a block of initial message to be encrypted](https://user-images.githubusercontent.com/89979281/174750983-511b393a-c27f-46f0-b137-3154fd3ed623.png)
+   
    Figure 1.2 - Example of a block of initial message to be encrypted
 
 2. The GetRoundKeys function performs key expansion. Since AES assumes a key length of 128 bits (in the simplest case), 
@@ -78,18 +80,21 @@ function GetRoundKeys(byte key[4*Nk], word w[Nb*(Nr+1)], Nk) {
 4. The SubBytes function is required to perform substitution: each byte in the block is replaced by 
 the corresponding element in the fixed table (S-box).
 
-![image](https://user-images.githubusercontent.com/89979281/174751134-2a263588-bccf-47e5-910d-6605a095acba.png)
+![Substitution table](https://user-images.githubusercontent.com/89979281/174751134-2a263588-bccf-47e5-910d-6605a095acba.png)
+
 Figure 1.3 - Substitution table
 
 5. The ShiftRows function cyclically shifts the bytes in each row of the block by r bytes to the left, 
 depending on the row number.
 
-![image](https://user-images.githubusercontent.com/89979281/174751166-a04e8916-ddb8-4c15-82b2-47acd20b058f.png)
+![Block line shift diagram](https://user-images.githubusercontent.com/89979281/174751166-a04e8916-ddb8-4c15-82b2-47acd20b058f.png)
+
 Figure 1.4 - Block line shift diagram
 
 6. The MixColumns function consists of multiplying each column of a block with a constant matrix as follows:
 
-![image](https://user-images.githubusercontent.com/89979281/174751203-8c4f2e15-7f39-4bd6-9678-219d9dd17d49.png)
+![MixColumns operation](https://user-images.githubusercontent.com/89979281/174751203-8c4f2e15-7f39-4bd6-9678-219d9dd17d49.png)
+
 Figure 1.5 - MixColumns operation
 
 ## Decryption takes place according to the following algorithm
